@@ -6,24 +6,25 @@ namespace HereticalSolutions.Persistence.Serializers
 	/// <summary>
 	/// An interface for the classes capable of serializing data to save file(s)
 	/// </summary>
-	public partial interface ISerializer
+	public interface ISerializer
 	{
-        //TODO: implement in Heresy Databases and Repositories as partial
-        /*
 		/// <summary>
 		/// Saves data from dictionary<string, object> to save file(s)
 		/// </summary>
-		/// <param name="database">Storage</param>
+		/// <param name="target">Target object</param>
 		/// <param name="settings">Serializiation settings</param>
-		void Save(Dictionary<string, object> database, SerializationSettings settings);
+		void Save(object target, SerializationSettings settings);
+
+		void Save<TValue>(TValue target, SerializationSettings settings);
 
 		/// <summary>
 		/// Populates data to dictionary<string, object> from save file(s)
 		/// </summary>
-		/// <param name="database">Storage</param>
+		/// <param name="target">Target object</param>
 		/// <param name="settings">Serializiation settings</param>
-		void Load(Dictionary<string, object> database, SerializationSettings settings);
-        */
+		void Load(object target, SerializationSettings settings);
+
+		void Load<TValue>(TValue target, SerializationSettings settings);
 
 		/// <summary>
 		/// Erases save file(s)

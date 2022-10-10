@@ -2,11 +2,10 @@ using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
 using HereticalSolutions.Persistence.Settings;
-using System.Collections.Generic;
 
 namespace HereticalSolutions.Persistence.Serializers
 {
-	public partial class JsonSerializer : ISerializer
+	public class JsonSerializer : ISerializer
 	{
 		/// <summary>
 		/// JSON.Net serialization settings for writing
@@ -35,27 +34,38 @@ namespace HereticalSolutions.Persistence.Serializers
 			};
 		}
 
-		//TODO: implement in Heresy Databases and Repositories as partial
-		/*
 		/// <summary>
-		/// Saves data from dictionary<string, object> to json file
+		/// Saves data from target object to json file
 		/// </summary>
-		/// <param name="storage">Storage</param>
+		/// <param name="target">Target object</param>
 		/// <param name="settings">Serializiation settings</param>
-		public void Save(Dictionary<string, object> storage, SerializationSettings settings)
+		public void Save(object target, SerializationSettings settings)
 		{
 			string savePath = settings.FullPath;
 
 			FileExists(savePath);
 
 			string json = JsonConvert.SerializeObject(
-				storage,
+				target,
 				Formatting.Indented,
 				writeSerializerSettings);
 
 			File.WriteAllText(savePath, json);
 		}
-        */
+
+		public void Save<TValue>(TValue target, SerializationSettings settings)
+		{
+			string savePath = settings.FullPath;
+
+			FileExists(savePath);
+
+			string json = JsonConvert.SerializeObject(
+				target,
+				Formatting.Indented,
+				writeSerializerSettings);
+
+			File.WriteAllText(savePath, json);
+		}
 
 		/// <summary>
 		/// Checks whether the file at the specified path exists
@@ -82,14 +92,12 @@ namespace HereticalSolutions.Persistence.Serializers
 			return result;
 		}
 
-		//TODO: implement in Heresy Databases and Repositories as partial
-		/*
 		/// <summary>
-		/// Populates data to dictionary<string, object> from json file
+		/// Populates data to target object from json file
 		/// </summary>
-		/// <param name="storage">Storage</param>
+		/// <param name="target">Target object</param>
 		/// <param name="settings">Serializiation settings</param>
-		public void Load(Dictionary<string, object> storage, SerializationSettings settings)
+		public void Load(object target, SerializationSettings settings)
 		{
 			string savePath = settings.FullPath;
 
@@ -99,10 +107,23 @@ namespace HereticalSolutions.Persistence.Serializers
 					? Resources.Load<TextAsset>(settings.ResourcePath).text
 					: File.ReadAllText(savePath);
 
-				JsonConvert.PopulateObject(loadedData, storage, readSerializerSettings);
+				JsonConvert.PopulateObject(loadedData, target, readSerializerSettings);
 			}
 		}
-        */
+
+		public void Load<TValue>(TValue target, SerializationSettings settings)
+		{
+			string savePath = settings.FullPath;
+
+			if (FileExists(savePath))
+			{
+				var loadedData = settings.LoadFromResourcesFolder
+					? Resources.Load<TextAsset>(settings.ResourcePath).text
+					: File.ReadAllText(savePath);
+
+				JsonConvert.PopulateObject(loadedData, target, readSerializerSettings);
+			}
+		}
 
 		/// <summary>
 		/// Erases json file

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HereticalSolutions.Persistence.Serializers;
 using HereticalSolutions.Persistence.Settings;
@@ -7,37 +8,42 @@ namespace HereticalSolutions.Persistence.Visitors
 	/// <summary>
 	/// A visitor that loads data from serializer and provides it to the visitees
 	/// </summary>
-	public partial class DeserializationVisitor
+	public class DeserializationVisitor : VisitorBase
 	{
 		/// <summary>
 		/// Serializer dependency
 		/// </summary>
-		private ISerializer serializer;
+		protected ISerializer serializer;
 
 		/// <summary>
 		/// Serialization settings dependency
 		/// </summary>
-		private SerializationSettings settings;
+		protected SerializationSettings settings;
+
+		public object DataAccessObject { get; set; }
 
 		public DeserializationVisitor(
+			Dictionary<Type, object> concreteVisitors,
 			ISerializer serializer,
 			SerializationSettings settings)
+			: base (concreteVisitors)
 		{
 			this.serializer = serializer;
 
 			this.settings = settings;
 		}
 
-		//TODO: implement in Heresy Databases and Repositories as partial
-		/*
-		/// <summary>
-		/// Provide data to persistent data repository
-		/// </summary>
-		/// <param name="storage">Storage</param>
-		public void VisitPersistentDataRepository(Dictionary<string, object> storage)
+		protected override void VisitConcrete<TVisitable>(
+			TVisitable visitable,
+			object concreteVisitor)
 		{
-			serializer.Load(storage, settings);
+			serializer.Load(
+				DataAccessObject,
+				settings);
+
+			base.VisitConcrete<TVisitable>(
+				visitable,
+				concreteVisitor);
 		}
-        */
 	}
 }

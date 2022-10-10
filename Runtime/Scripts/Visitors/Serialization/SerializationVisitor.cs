@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HereticalSolutions.Persistence.Serializers;
 using HereticalSolutions.Persistence.Settings;
@@ -7,7 +8,7 @@ namespace HereticalSolutions.Persistence.Visitors
 	/// <summary>
 	/// A visitor that retrieves data from visitees and saves it with serializer
 	/// </summary>
-	public partial class SerializationVisitor
+	public class SerializationVisitor : VisitorBase
 	{
 		/// <summary>
 		/// Serializer dependency
@@ -19,25 +20,30 @@ namespace HereticalSolutions.Persistence.Visitors
 		/// </summary>
 		private SerializationSettings settings;
 
+		public object DataAccessObject { get; set; }
+
 		public SerializationVisitor(
+			Dictionary<Type, object> concreteVisitors,
 			ISerializer serializer,
 			SerializationSettings settings)
+			: base(concreteVisitors)
 		{
 			this.serializer = serializer;
 
 			this.settings = settings;
 		}
 
-		//TODO: implement in Heresy Databases and Repositories as partial
-		/*
-		/// <summary>
-		/// Retrieve data from persistent data repository
-		/// </summary>
-		/// <param name="storage">Storage</param>
-		public void VisitPersistentDataRepository(Dictionary<string, object> storage)
+		protected override void VisitConcrete<TVisitable>(
+			TVisitable visitable,
+			object concreteVisitor)
 		{
-			serializer.Save(storage, settings);
+			base.VisitConcrete<TVisitable>(
+				visitable,
+				concreteVisitor);
+
+			serializer.Save(
+				DataAccessObject,
+				settings);
 		}
-        */
 	}
 }

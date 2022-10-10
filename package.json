@@ -14,5 +14,8 @@
   },
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.2"
+  },
+  "gitDependencies": {
+    "com.hereticalsolutions.heresy-databases-and-repositories": "https://github.com/Heretical-Solutions/Heresy-Databases-and-Repositories.git"
   }
 }
